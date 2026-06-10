@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fechamento de Caixa - Moto Panther</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #e9e9e9;
+      padding: 20px;
+    }
+
+    .actions {
+      width: 210mm;
+      margin: 0 auto 12px auto;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    button {
+      padding: 8px 14px;
+      border: 1px solid #333;
+      background: #fff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      background: #fff;
+      margin: 0 auto;
+      padding: 10mm;
+      border: 1px solid #ccc;
+    }
+
+    .form-border {
+      width: 190mm;
+      height: 128mm;
+      border: 1.5px solid #555;
+      position: relative;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .title {
+      position: absolute;
+      top: 8mm;
+      left: 0;
+      right: 72mm;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1px;
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    .subtitle {
+      position: absolute;
+      top: 15mm;
+      left: 0;
+      right: 72mm;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      z-index: 2;
+    }
+
+    .date-box {
+      position: absolute;
+      top: 8mm;
+      right: 10mm;
+      width: 60mm;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: end;
+      gap: 1.5mm;
+      z-index: 2;
+    }
+
+    .date-input {
+      width: 12mm;
+      height: 5mm;
+      border: none;
+      border-bottom: 1.2px solid #222;
+      outline: none;
+      background: transparent;
+      text-align: center;
+      font-size: 11px;
+      padding: 0;
+    }
+
+    .date-input.year {
+      width: 16mm;
+    }
+
+    .left-section {
+      position: absolute;
+      top: 27mm;
+      left: 13mm;
+      width: 64mm;
+      z-index: 2;
+    }
+
+    .summary-section {
+      position: absolute;
+      top: 78mm;
+      left: 13mm;
+      width: 64mm;
+      z-index: 2;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 2mm;
+      white-space: nowrap;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 28mm 8mm 28mm;
+      align-items: end;
+      height: 7mm;
+      font-size: 11px;
+    }
+
+    .row .label {
+      white-space: nowrap;
+    }
+
+    .row.total .label,
+    .row.total .currency {
+      font-weight: 800;
+    }
+
+    .row input {
+      width: 28mm;
+      height: 4.6mm;
+      border: none;
+      border-bottom: 1.2px solid #222;
+      background: transparent;
+      outline: none;
+      font-size: 10.5px;
+      text-align: right;
+      padding: 0 1mm;
+    }
+
+    .supply-box {
+      position: absolute;
+      top: 27mm;
+      right: 10mm;
+      width: 76mm;
+      display: flex;
+      align-items: end;
+      justify-content: flex-end;
+      gap: 2mm;
+      font-size: 12px;
+      font-weight: 800;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .money-input {
+      width: 28mm;
+      height: 4.8mm;
+      border: none;
+      border-bottom: 1.2px solid #222;
+      background: transparent;
+      outline: none;
+      text-align: right;
+      font-size: 10.5px;
+      padding: 0 1mm;
+    }
+
+    .obs-box {
+      position: absolute;
+      top: 45mm;
+      right: 10mm;
+      width: 86mm;
+      font-size: 12px;
+      font-weight: 800;
+      z-index: 2;
+    }
+
+    .obs-grid {
+      display: grid;
+      grid-template-columns: 12mm 1fr;
+      row-gap: 3.5mm;
+      align-items: end;
+    }
+
+    .obs-label {
+      font-size: 12px;
+      font-weight: 800;
+      padding-bottom: 1mm;
+    }
+
+    .obs-input {
+      width: 100%;
+      height: 5mm;
+      border: none;
+      border-bottom: 1.2px solid #222;
+      background: transparent;
+      outline: none;
+      font-size: 11px;
+      padding: 0 1mm;
+    }
+
+    .obs-spacer {
+      width: 12mm;
+      height: 5mm;
+    }
+
+    .watermark {
+      position: absolute;
+      top: 44mm;
+      left: 50%;
+      transform: translateX(-50%);
+
+      width: 100mm;
+      height: 48mm;
+
+      opacity: 0.12;
+      z-index: 1;
+      pointer-events: none;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .watermark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .fallback-watermark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #555;
+      font-size: 29px;
+      font-weight: 900;
+      letter-spacing: 7px;
+      line-height: 1.3;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .actions {
+        display: none;
+      }
+
+      .page {
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+        padding: 10mm;
+        border: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="actions">
+    <button onclick="window.print()">Imprimir</button>
+    <button onclick="limparCampos()">Limpar</button>
+  </div>
+
+  <main class="page">
+    <section class="form-border">
+      <div class="title">MOTO PANTHER FABRE</div>
+      <div class="subtitle">CAIXA</div>
+
+      <div class="date-box">
+        <span>DATA</span>
+        <input class="date-input" maxlength="2" />
+        <span>/</span>
+        <input class="date-input" maxlength="2" />
+        <span>/</span>
+        <input class="date-input year" maxlength="4" />
+      </div>
+
+      <div class="left-section">
+        <div class="row"><span class="label">DINHEIRO</span><span class="currency">R$</span><input id="dinheiro" /></div>
+        <div class="row"><span class="label">CHEQUE</span><span class="currency">R$</span><input id="cheque" /></div>
+        <div class="row"><span class="label">CARTÃO</span><span class="currency">R$</span><input id="cartao" /></div>
+        <div class="row"><span class="label">PIX.MAQ</span><span class="currency">R$</span><input id="pixmaq" /></div>
+        <div class="row"><span class="label">SUP./TR.</span><span class="currency">R$</span><input id="suptr" /></div>
+        <div class="row total"><span class="label">TOTAL</span><span class="currency">R$</span><input id="totalCaixa" readonly /></div>
+        <div class="row"><span class="label">( - ) DIF.</span><span class="currency">R$</span><input id="difCaixa" readonly /></div>
+      </div>
+
+      <div class="summary-section">
+        <div class="section-title">RESUMO DE CAIXA</div>
+        <div class="row"><span class="label">VENDAS</span><span class="currency">R$</span><input id="vendas" /></div>
+        <div class="row"><span class="label">M.OBRA</span><span class="currency">R$</span><input id="mobra" /></div>
+        <div class="row"><span class="label">( - ) VALES</span><span class="currency">R$</span><input id="vales" /></div>
+        <div class="row"><span class="label">SUP anterior</span><span class="currency">R$</span><input id="supAnterior" readonly /></div>
+        <div class="row total"><span class="label">TOTAL</span><span class="currency">R$</span><input id="totalResumo" readonly /></div>
+        <div class="row"><span class="label">( + ) DIF.</span><span class="currency">R$</span><input id="difResumo" readonly /></div>
+      </div>
+
+      <div class="supply-box">
+        <span>SUPRIMENTOS R$</span>
+        <input class="money-input" id="suprimentos" />
+      </div>
+
+      <div class="obs-box">
+        <div class="obs-grid">
+          <span class="obs-label">OBS.:</span>
+          <input class="obs-input" />
+
+          <span class="obs-spacer"></span>
+          <input class="obs-input" />
+
+          <span class="obs-spacer"></span>
+          <input class="obs-input" />
+
+          <span class="obs-spacer"></span>
+          <input class="obs-input" />
+
+          <span class="obs-spacer"></span>
+          <input class="obs-input" />
+        </div>
+      </div>
+
+      <div class="watermark">
+        <img src="pantera.png" alt="Logo Moto Panther" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div class="fallback-watermark" style="display:none;">MOTO<br>PANTHER</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const moneyFields = [
+      'dinheiro', 'cheque', 'cartao', 'pixmaq', 'suptr', 'suprimentos',
+      'vendas', 'mobra', 'vales'
+    ];
+
+    const suprimentosField = document.getElementById('suprimentos');
+    const supAnteriorField = document.getElementById('supAnterior');
+
+    const suprimentoSalvo = localStorage.getItem('suprimentosCaixa');
+    if (suprimentoSalvo) {
+      suprimentosField.value = suprimentoSalvo;
+      supAnteriorField.value = suprimentoSalvo;
+    }
+
+    function toNumber(value) {
+      if (!value) return 0;
+      return Number(String(value).replaceAll('.', '').replace(',', '.')) || 0;
+    }
+
+    function formatMoneyOnBlur(field) {
+      const rawValue = String(field.value).trim();
+      if (!rawValue) {
+        field.value = '';
+        calcular();
+        return;
+      }
+
+      const numberValue = toNumber(rawValue);
+      field.value = toMoney(numberValue);
+      calcular();
+    }
+
+    function toMoney(value) {
+      return value.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function calcular() {
+      localStorage.setItem('suprimentosCaixa', suprimentosField.value);
+      supAnteriorField.value = suprimentosField.value;
+
+      const totalCaixa =
+        toNumber(document.getElementById('dinheiro').value) +
+        toNumber(document.getElementById('cheque').value) +
+        toNumber(document.getElementById('cartao').value) +
+        toNumber(document.getElementById('pixmaq').value) +
+        toNumber(document.getElementById('suptr').value);
+
+      document.getElementById('totalCaixa').value = totalCaixa ? toMoney(totalCaixa) : '';
+
+      const totalResumo =
+        toNumber(document.getElementById('vendas').value) +
+        toNumber(document.getElementById('mobra').value) -
+        toNumber(document.getElementById('vales').value) +
+        toNumber(document.getElementById('supAnterior').value);
+
+      document.getElementById('totalResumo').value = totalResumo ? toMoney(totalResumo) : '';
+
+      const diferenca = totalCaixa - totalResumo;
+      document.getElementById('difResumo').value = (totalCaixa || totalResumo) ? toMoney(diferenca) : '';
+      document.getElementById('difCaixa').value = '';
+    }
+
+    function limparCampos() {
+      document.querySelectorAll('input').forEach(input => input.value = '');
+      localStorage.removeItem('suprimentosCaixa');
+    }
+
+    moneyFields.forEach(id => {
+      const field = document.getElementById(id);
+      if (field) {
+        field.addEventListener('input', calcular);
+        field.addEventListener('blur', () => formatMoneyOnBlur(field));
+      }
+    });
+
+    calcular();
+  </script>
+</body>
+</html>
